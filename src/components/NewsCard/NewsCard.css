@@ -1,0 +1,185 @@
+.card {
+  width: 400px;
+  height: 576px;
+  background-color: white;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  cursor: pointer;
+}
+
+.card__bookmark {
+  position: absolute;
+  background-color: white;
+  background-image: url('../../images/bookmark.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 24px;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 8px;
+  top: 24px;
+  right: 24px;
+  cursor: pointer;  
+}
+
+.card__bookmark:hover {
+  background-image: url('../../images/bookmark-hover.svg');
+  transition: background-image 1s ease-in-out;
+}
+
+.card__trash {
+  position: absolute;
+  background-color: white;
+  background-image: url('../../images/trash.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 24px;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 8px;
+  top: 24px;
+  right: 24px;
+  cursor: pointer; 
+}
+
+.card__trash:hover {
+  background-image: url('../../images/trash-hover.svg');
+  transition: background-image 1s ease-in-out;
+}
+
+.card__keyword {
+  margin: 0;
+  position: absolute;
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 24px;
+  color: #000;
+  background-color: white;
+  border-radius: 10px;
+  top: 24px;
+  left: 24px;
+  padding: 8px 12px;
+}
+
+.card__image {
+  width: 400px;
+  height: 272px;
+} 
+
+.card__date {
+  font-family: 'Source Sans Pro';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 24px;
+  color: #B6BCBF;
+  max-width: 352px;
+  margin-left: 24px;
+}
+
+.card__title {
+  font-family: 'Roboto Slab';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 26px;
+  line-height: 30px;
+  color: #1A1B22;
+  max-width: 352px;
+  margin: auto;
+  margin-bottom: 16px;
+}
+
+.card__text {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 22px;
+  color: #1A1B22;
+  max-width: 352px;
+  margin: auto;
+  text-overflow: ellipsis;
+  overflow: hidden; 
+}
+
+.card__source {
+  font-family: 'Roboto Slab';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 20px;
+  color: #B6BCBF;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  max-width: 352px;
+  margin-left: 24px;
+
+}
+
+@media screen and (max-width: 1279px) {
+  .card {
+    width: 224px;
+    height: 420px;
+  }
+
+  .card__image {
+    width: 224px;
+    height: 150px;
+  }
+
+  .card__date {
+    margin-left: 16px;
+    margin-top: 16px;
+    margin-bottom: 12px;
+  }
+
+  .card__title {
+    font-size: 22px;
+    line-height: 24px;
+    max-width: 192px;
+    margin-bottom: 10px;
+  }
+
+  .card__text {
+    max-width: 192px;
+    height: 88px;
+  }
+
+  .card__source {
+    margin-left: 16px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .card {
+    width: 288px;
+    height: 440px;
+  }
+
+  .card__image {
+    width: 288px;
+    height: 196px;
+  }
+
+  .card__date {
+    margin-bottom: 10px;
+  }
+
+  .card__title {
+    line-height: 26px;
+    max-width: 256px;
+    margin-bottom: 10px;
+  }
+
+  .card__text {
+    max-width: 256px;
+  }
+}
