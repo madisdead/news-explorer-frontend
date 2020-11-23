@@ -1,0 +1,43 @@
+@keyframes spin {
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+.preloader {
+	padding-top: 80px;
+	padding-bottom: 80px;
+	background-color: #E5E5E5;
+	display: none;
+}
+
+.preloader_visiable {
+	display: block;
+}
+
+.preloader__cirlce {
+	display: block;
+	width: 74px;
+	height: 74px;
+	border: 1px solid #444;
+	border-bottom-color: #888;
+	
+	border-radius: 50%;
+	
+	margin: auto;
+	
+	animation: spin .75s infinite linear;
+}
+
+.preloader__text {
+	font-family: 'Roboto';
+	font-style: normal;
+	font-weight: normal;
+	font-size: 18px;
+	line-height: 24px;
+	color: #B6BCBF;
+	max-width: 280px;
+	text-align: center;
+	margin: auto;
+	margin-top: 24px;
+}
