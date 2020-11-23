@@ -27,6 +27,11 @@
   padding-top: 11px;
 }
 
+.header__title:hover {
+  opacity: .7;
+  transition: opacity 1s ease-in-out;
+}
+
 .header__container {
   font-family: 'Roboto';
   font-style: normal;
@@ -45,6 +50,11 @@
   margin: 0;
   margin-left: 34px;
   padding-top: 11px;
+}
+
+.header__link:hover {
+  opacity: .7;
+  transition: opacity 1s ease-in-out;
 }
 
 .header__link_selected {
@@ -76,6 +86,11 @@
   margin-left: 32px;
   padding-left: 16px;
   padding-right: 16px;
+}
+
+.header__button:hover {
+  opacity: .7;
+  transition: opacity 1s ease-in-out;
 }
 
 .header__logout {

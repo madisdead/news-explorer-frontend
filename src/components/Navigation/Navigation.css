@@ -21,6 +21,11 @@
   margin-right: 16px;
 }
 
+.navigation__link:hover {
+  opacity: .7;
+  transition: opacity 1s ease-in-out;
+}
+
 .navigation__social {
   margin: 0;
   margin-top: 28px;
@@ -31,6 +36,11 @@
 
 .navigation__social-link {
   margin-left: 24px;
+}
+
+.navigation__social-link:hover {
+  opacity: .7;
+  transition: opacity 1s ease-in-out;
 }
 
 @media screen and (max-width: 767px) {
