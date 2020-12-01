@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
-import { useHistory, Route, Switch, Redirect, Link } from 'react-router-dom';
+import React from 'react';
 import PopupWithForm from '../PopupWithForm/PopupWithForm.js';
-import CurrentUserContext from '../../contexts/CurrentUserContext.js';
 
 class RegisterPopup extends React.Component {
   constructor(props){

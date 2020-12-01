@@ -1,5 +1,5 @@
 import './Header.css';
-import React, { useState } from 'react';
+import React from 'react';
 import { Route, Switch, Link } from 'react-router-dom';
 import logout from '../../images/logout.svg';
 import logoutDark from '../../images/logout-dark.svg';

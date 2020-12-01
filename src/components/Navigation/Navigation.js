@@ -1,6 +1,6 @@
 import './Navigation.css';
 import React from 'react';
-import { Route, Switch, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import github from '../../images/github.png';
 import fb from '../../images/fb.png';
 
@@ -12,17 +12,17 @@ function Navigation() {
           <Link to="/" className="navigation__link">Главная</Link>
         </li>
         <li>
-          <a href="https://praktikum.yandex.ru/" className="navigation__link" target="_blank">Яндекс.Практикум</a>
+          <a href="https://praktikum.yandex.ru/" className="navigation__link" target="_blank" rel="noreferrer">Яндекс.Практикум</a>
         </li>
       </ul>
       <ul className="navigation__social">
         <li>
-          <a href="https://github.com/madisdead/" className="navigation__social-link" target="_blank">
+          <a href="https://github.com/madisdead/" className="navigation__social-link" target="_blank" rel="noreferrer">
             <img src={github} alt="github"/>
           </a>
         </li>
         <li>
-          <a href="https://ru-ru.facebook.com/" className="navigation__social-link" target="_blank">
+          <a href="https://ru-ru.facebook.com/" className="navigation__social-link" target="_blank" rel="noreferrer">
             <img src={fb} alt="facebook"/>
           </a>
         </li>
