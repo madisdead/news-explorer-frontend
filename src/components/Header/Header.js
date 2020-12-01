@@ -26,8 +26,8 @@ function Header(props) {
           <Link to="/" className={`header__link`} onClick={props.onClose}>Главная</Link>
           {props.loggedIn && <Link to="/saved-news" className={`header__link`} onClick={props.onClose}>Сохраненные статьи</Link>}
           { props.loggedIn ?
-              <button className={`header__button`} onMouseUp={props.onClose}>
-                Грета
+              <button className={`header__button`} onClick={props.onSignOut} onMouseUp={props.onClose}>
+                {props.name}
                 <img src={logout} alt="выход" className="header__logout" />
               </button>
               :
@@ -41,8 +41,8 @@ function Header(props) {
             <Route path="/saved-news">
               <Link to="/" className={`header__link header__link_${props.theme} header__link_${props.theme}_not-selected`}>Главная</Link>
               <Link to="/saved-news" className={`header__link header__link_${props.theme} header__link_${props.theme}_selected`}>Сохраненные статьи</Link>
-              <button className={`header__button header__button_${props.theme}`}>
-                Грета
+              <button className={`header__button header__button_${props.theme}`} onClick={props.onSignOut}>
+                {props.name}
                 <img src={logoutDark} alt="выход" className="header__logout" />
               </button>
             </Route>
@@ -50,8 +50,8 @@ function Header(props) {
               <Link to="/" className="header__link header__link_selected">Главная</Link>
               {props.loggedIn && <Link to="/saved-news" className="header__link header__link_not-selected">Сохраненные статьи</Link>}
               { props.loggedIn ?
-              <button className={`header__button`}>
-                Грета
+              <button className={`header__button`} onClick={props.onSignOut}>
+                {props.name}
                 <img src={logout} alt="выход" className="header__logout" />
               </button>
               :

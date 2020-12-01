@@ -2,6 +2,8 @@
   color: #1A1B22;
   max-width: 1232px;
   margin: auto;
+  padding-bottom: 56px;
+
 }
 
 .saved-news-header__caption {
@@ -24,6 +26,7 @@
   max-width: 530px;
   margin: 0;
   margin-top: 28px;
+  margin-bottom: 30px;
 }
 
 .saved-news-header__text {
@@ -34,11 +37,16 @@
   font-size: 18px;
   line-height: 24px;
   margin-top: 30px;
-  margin-bottom: 56px;
+  display: inline;
 }
 
 .saved-news-header__keyword {
   font-weight: bold;
+  text-transform: capitalize;
+}
+
+.saved-news-header__keyword_no-uppercase {
+  text-transform: none;
 }
 
 

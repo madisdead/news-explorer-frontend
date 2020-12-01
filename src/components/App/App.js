@@ -1,12 +1,17 @@
 import './App.css';
 import React, { useState } from 'react';
-import { useHistory, Route, Switch, Redirect, Link } from 'react-router-dom';
+import { useHistory, Route, Switch } from 'react-router-dom';
 import Main from '../Main/Main.js';
 import Header from '../Header/Header.js';
 import Footer from '../Footer/Footer.js';
 import SavedNews from '../SavedNews/SavedNews.js';
+import LoginPopup from '../Login/Login.js';
+import RegisterPopup from '../Register/Register.js';
+import CurrentUserContext from '../../contexts/CurrentUserContext.js';
+import * as MainApi from '../../utils/MainApi.js';
 import PopupWithForm from '../PopupWithForm/PopupWithForm.js';
-
+import ProtectedRoute from '../ProtectedRoute/ProtectedRoute.js';
+import newApi from '../../utils/NewsApi.js';
 
 function App() {
   const dark = "theme_dark";
@@ -15,14 +20,57 @@ function App() {
   const [isRegisterPopupOpen, setIsRegisterPopupOpen] = useState(false);
   const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState({});
+  const [isInfoTooltippOpen, setIsInfoTooltipOpen] = useState(false);
+  const [name, setName] = useState('');
+  const [userArticles, setUserArticles] = useState([]);
+  const history = useHistory();
+  const [searchedArticles, setSearchedArticles] = useState(JSON.parse(localStorage.getItem('articles')) ? JSON.parse(localStorage.getItem('articles')) : []);
+  const [isResultsVisiable, setIsResultVisiable] = useState(!!JSON.parse(localStorage.getItem('articles')));
+  const [id, setId] = useState('');
+  const [key, setKey] = useState('');
+  const [numberOfNews, setNumberOfNews] = useState(3);
+  
+  React.useEffect(()=>{
+    MainApi.getUser()
+      .then((res)=>{
+        setCurrentUser(res);
+      }).catch((err)=>{
+        console.log(err);
+      });
+  }, []);
 
   React.useEffect(() => {
-    if(isRegisterPopupOpen=== true || isLoginPopupOpen=== true || isMenuOpen===true) {
+    if(isRegisterPopupOpen === true || isLoginPopupOpen=== true || isMenuOpen===true) {
       document.querySelector('.app').addEventListener('keydown', handleEscClose);
     } else {
       document.querySelector('.app').removeEventListener('keydown', handleEscClose);
     }
   });
+
+  React.useEffect(()=>{
+    handleTokenCheck();
+  });
+
+  React.useEffect(() => {
+    if(!searchedArticles) {
+      searchedArticles.forEach((card) => card.keyword=key );
+    }
+  }, [searchedArticles]);
+
+
+  React.useEffect(()=>{
+    MainApi.getArticles()
+    .then((res)=>{
+      setUserArticles(res);
+    }).catch((err)=>{
+      console.log(err);
+    });
+  }, []);
+
+  function handleShowMore() {
+    setNumberOfNews(numberOfNews+3);
+  }
 
   function handleMenuClick() {
     if(isMenuOpen===true || isRegisterPopupOpen===true) {
@@ -56,56 +104,109 @@ function App() {
     setIsMenuOpen(false);
     setIsRegisterPopupOpen(false);
     setIsLoginPopupOpen(false);
+    setIsInfoTooltipOpen(false);
+  }
+
+  function handleRegister(email, password, name) {
+    return MainApi.register(email, password, name).then((res) => {
+      if(res.ok){
+        closeAllPopups();
+        setIsInfoTooltipOpen(true);
+      } else {
+        console.log('Произошла ошибка.');
+      }
+    });
+  }
+
+  function handleLogin(email, password) {
+    return MainApi.authorize(email, password)
+      .then((data)=>{
+        if (data.token){
+          closeAllPopups();
+          setLoggedIn(true);
+        }
+      });
+  }
+
+  function handleTokenCheck() {
+    if (localStorage.getItem('jwt')){
+      const jwt = localStorage.getItem('jwt');
+      MainApi.checkToken(jwt)
+        .then((res) => {
+          if (res){
+            setName(res.name);
+            setLoggedIn(true);
+          }
+        })
+        .catch(err => console.log(err));
+    }
+  }
+
+  function handleSaveArticle(articleObj){
+    MainApi.saveCard(articleObj)
+      .then((res)=>{
+        setUserArticles([...userArticles, res]);
+        setId(res._id);
+      }).catch((err)=>{
+        console.log(err);
+    });
+  }
+
+  function handleCardDelete(card) {
+    MainApi.deleteCard(card._id)
+      .then(()=>{
+        const newArticles = userArticles.filter(element=>element._id!==card._id);
+        setUserArticles(newArticles);
+      }).catch((err)=>{
+        console.log(err);
+      });
+  }
+
+  function handleSearch(keyword) {
+    newApi.getNews(keyword)
+      .then((res) => {
+        localStorage.removeItem('articles');
+        setNumberOfNews(3);
+        setKey(keyword);
+        localStorage.setItem('keyword', keyword);
+        setSearchedArticles(res.articles);
+        setIsResultVisiable(true);
+        localStorage.setItem('articles', JSON.stringify(res.articles));
+      })
+  }
+
+  function signOut(){
+    localStorage.removeItem('jwt');
+    setLoggedIn(false);
+    setName('');
+    history.push('/');
   }
 
   return (
+    <CurrentUserContext.Provider value={currentUser}>
     <div className="app">
       <Switch>
         <Route path="/saved-news">
-          <Header loggedIn={loggedIn} theme={dark} isMenuOpen={isMenuOpen} onClose={closeAllPopups} menuClick={handleMenuClick} isRegisterPopupOpen={isRegisterPopupOpen}/>
-          <SavedNews />
+          <Header onSignOut={signOut} name={name} loggedIn={loggedIn} theme={dark} isMenuOpen={isMenuOpen} 
+            onClose={closeAllPopups} menuClick={handleMenuClick} isRegisterPopupOpen={isRegisterPopupOpen}/>
+          <ProtectedRoute path="/saved-news" loggedIn={loggedIn} component={SavedNews} articles={userArticles} handleCardDelete={handleCardDelete} id={id}>
+          </ProtectedRoute>
         </Route>
         <Route path="/">
-          <Header onLoginClick={handleAuthClick} loggedIn={loggedIn} theme={light} isMenuOpen={isMenuOpen} onClose={closeAllPopups} menuClick={handleMenuClick} isRegisterPopupOpen={isRegisterPopupOpen}/>
-          <Main />
+          <Header onSignOut={signOut} name={name} onLoginClick={handleAuthClick} loggedIn={loggedIn} theme={light} isMenuOpen={isMenuOpen} 
+            onClose={closeAllPopups} menuClick={handleMenuClick} isRegisterPopupOpen={isRegisterPopupOpen}/>
+          <Main loggedIn={loggedIn} handleSearch={handleSearch} isResultsVisiable={isResultsVisiable} articles={searchedArticles} 
+            handleShowMore={handleShowMore} numberOfNews={numberOfNews} handleSaveArticle={handleSaveArticle} handleCardDelete={handleCardDelete} id={id}/>
         </Route>
       </Switch>
       <Footer />
-      <PopupWithForm title="Вход" isOpen={isLoginPopupOpen} name="login" onClose={closeAllPopups}>
-        <label className="popup__field">
-          <span className="popup__label">E-mail</span>
-          <input type="email" className="popup__input popup__input_email" id="email-input-login" required placeholder="Введите почту" />
-        </label>
-        <label className="popup__field">
-          <span className="popup__label">Пароль</span>
-          <input type="password" className="popup__input popup__input_password" id="password-input-login" required placeholder="Введите пароль" />
-        </label>
-        <button type="button" className="popup__button popup__button_disabled">Войти</button>
-        <div className="popup__choice">
-          <p className="popup__text">или</p>
-          <a className="popup__link" onClick={handleRegisterClick}>&nbsp;Зарегистрироваться</a>
-        </div>
-      </PopupWithForm>
-      <PopupWithForm title="Регистрация" isOpen={isRegisterPopupOpen} name="register" onClose={closeAllPopups}>
-        <label className="popup__field">
-          <span className="popup__label">E-mail</span>
-          <input type="email" className="popup__input popup__input_email" id="email-input-register" required placeholder="Введите почту" />
-        </label>
-        <label className="popup__field">
-          <span className="popup__label">Пароль</span>
-          <input type="password" className="popup__input popup__input_password" id="password-input-register" required placeholder="Введите пароль" />
-        </label>
-        <label className="popup__field">
-          <span className="popup__label">Имя</span>
-          <input type="text" className="popup__input popup__input_name" id="name-input" required placeholder="Введите имя" />
-        </label>
-        <button type="button" className="popup__button popup__button_disabled">Зарегистрироваться</button>
-        <div className="popup__choice">
-          <p className="popup__text">или</p>
-          <a className="popup__link" onClick={handleLoginClick}>&nbsp;Войти</a>
-        </div>
+      <LoginPopup isOpen={isLoginPopupOpen} onClose={closeAllPopups} onRegisterClick={handleRegisterClick} onLogin={handleLogin} />
+      <RegisterPopup isOpen={isRegisterPopupOpen} onClose={closeAllPopups} onLoginClick={handleLoginClick} onRegister={handleRegister} />
+      <PopupWithForm isOpen={isInfoTooltippOpen} title="Пользователь успешно зарегистрирован!" onClose={closeAllPopups}>
+        <p className="popup__link" onClick={handleLoginClick}>Войти</p>
       </PopupWithForm>
     </div>
+    </CurrentUserContext.Provider>
   );
 }
 
