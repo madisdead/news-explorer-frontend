@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://api.news.tarakanov.students.nomoreparties.space';
+export const BASE_URL = 'http://localhost:3001';
 
 export const register = (email, password, name) => {
   return fetch(`${BASE_URL}/signup`, {

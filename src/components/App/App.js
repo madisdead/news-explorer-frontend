@@ -25,10 +25,11 @@ function App() {
   const [name, setName] = useState('');
   const [userArticles, setUserArticles] = useState([]);
   const history = useHistory();
-  const [searchedArticles, setSearchedArticles] = useState(JSON.parse(localStorage.getItem('articles')) ? JSON.parse(localStorage.getItem('articles')) : []);
-  const [isResultsVisiable, setIsResultVisiable] = useState(!!JSON.parse(localStorage.getItem('articles')));
+  const [searchedArticles, setSearchedArticles] = useState(JSON.parse(localStorage.getItem('articles')) ? 
+    JSON.parse(localStorage.getItem('articles')) : []);
+  const [isResultsVisiable, setIsResultVisiable] = useState(!!JSON.parse(localStorage.getItem('articles')) ? 
+    !!JSON.parse(localStorage.getItem('articles')) : false );
   const [id, setId] = useState('');
-  const [key, setKey] = useState('');
   const [numberOfNews, setNumberOfNews] = useState(3);
   
   React.useEffect(()=>{
@@ -51,13 +52,6 @@ function App() {
   React.useEffect(()=>{
     handleTokenCheck();
   });
-
-  React.useEffect(() => {
-    if(!searchedArticles) {
-      searchedArticles.forEach((card) => card.keyword=key );
-    }
-  }, [searchedArticles]);
-
 
   React.useEffect(()=>{
     MainApi.getArticles()
@@ -167,12 +161,12 @@ function App() {
       .then((res) => {
         localStorage.removeItem('articles');
         setNumberOfNews(3);
-        setKey(keyword);
-        localStorage.setItem('keyword', keyword);
-        setSearchedArticles(res.articles);
         setIsResultVisiable(true);
+
+        res.articles.forEach((card) => card['keyword']=keyword );
         localStorage.setItem('articles', JSON.stringify(res.articles));
-      })
+        setSearchedArticles(res.articles);
+      });
   }
 
   function signOut(){
